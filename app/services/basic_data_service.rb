@@ -42,6 +42,7 @@ class BasicDataService
         	metadata: metadata
         }
      rescue Exception => e
+      puts e
       return user_data
      end
     end
