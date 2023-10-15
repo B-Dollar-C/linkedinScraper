@@ -64,3 +64,4 @@ gem 'watir'
 gem 'webdrivers'
 gem "nokogiri", "~> 1.8"
 gem 'awesome_print', '~> 1.8'
+gem 'bundler', '~> 2.3.26'

@@ -236,6 +236,7 @@ PLATFORMS
 DEPENDENCIES
   awesome_print (~> 1.8)
   bootsnap (>= 1.1.0)
+  bundler (~> 2.3.26)
   byebug
   capybara (>= 2.15)
   chromedriver-helper
