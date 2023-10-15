@@ -1,8 +1,4 @@
 class BasicDataService
-	require 'yaml'
-	secrets = YAML.load_file('config/application.yml')
-	PASSWORD = secrets["development"]["PASSWORD"]
-	EMAIL = secrets["development"]["EMAIL"]
 
 	def self.overview(profile_url)
       user_data = {}
@@ -10,8 +6,8 @@ class BasicDataService
         browser = Watir::Browser.new :chrome, headless: true
         browser.goto("https://linkedin.com")
         sleep(2)
-        browser.text_field(id: 'session_password').set(PASSWORD)
-        browser.text_field(id: 'session_key').set(EMAIL)
+        browser.text_field(id: 'session_password').set("Ravimani@123")
+        browser.text_field(id: 'session_key').set("manitripathiravi007@gmail.com")
         browser.button(data_id: 'sign-in-form__submit-btn').click
         browser.goto(profile_url)
         sleep(2)
