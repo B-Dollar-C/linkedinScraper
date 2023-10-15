@@ -3,7 +3,7 @@ class BasicDataService
 	def self.overview(profile_url)
       user_data = {}
       begin
-        browser = Watir::Browser.new :chrome, headless: true
+        browser = Watir::Browser.new :chrome, headless: true, options: { binary: '/usr/bin/google-chrome' }
         browser.goto("https://linkedin.com")
         sleep(2)
         browser.text_field(id: 'session_password').set("Ravimani@123")
