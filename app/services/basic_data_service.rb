@@ -7,6 +7,9 @@ class BasicDataService
        browser = Watir::Browser.new :chrome, headless: true#, options: { binary: '/usr/bin/google-chrome' }, driver_path: '/usr/bin/chromedriver'
         browser.goto("https://linkedin.com")
         sleep(5)
+        puts "---------------"
+        puts browser.inspect
+        puts "---------------"
         browser.text_field(id: 'session_password').set("Ravimani@123")
         browser.text_field(id: 'session_key').set("manitripathiravi007@gmail.com")
         browser.button(data_id: 'sign-in-form__submit-btn').click
