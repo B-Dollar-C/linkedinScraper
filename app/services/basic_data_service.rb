@@ -13,6 +13,10 @@ class BasicDataService
         browser.text_field(id: 'session_password').set("Ravimani@123")
         browser.text_field(id: 'session_key').set("manitripathiravi007@gmail.com")
         browser.button(data_id: 'sign-in-form__submit-btn').click
+        puts "-------------------------"
+        puts browser.inspect
+        puts "-------------------------"
+        sleep(2)
         browser.goto(profile_url)
         sleep(5)
         #browser_result = browser.section(class: 'artdeco-card ember-view pv-top-card').wait_until(&:present?)
