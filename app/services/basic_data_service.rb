@@ -3,14 +3,14 @@ class BasicDataService
 	def self.overview(profile_url)
       user_data = {}
       begin
-        browser = Watir::Browser.new :chrome, headless: true, options: { binary: '/usr/bin/google-chrome' }
+        browser = Watir::Browser.new :chrome, headless: true#, options: { binary: '/usr/bin/google-chrome' }
         browser.goto("https://linkedin.com")
-        sleep(2)
+        sleep(5)
         browser.text_field(id: 'session_password').set("Ravimani@123")
         browser.text_field(id: 'session_key').set("manitripathiravi007@gmail.com")
         browser.button(data_id: 'sign-in-form__submit-btn').click
         browser.goto(profile_url)
-        sleep(2)
+        sleep(5)
         browser_result = browser.section(class: 'artdeco-card ember-view pv-top-card').wait_until(&:present?)
         doc = Nokogiri::HTML(browser_result.inner_html)
         profile_name = doc.at_css('.pv-text-details__title h1').text.strip
@@ -20,7 +20,7 @@ class BasicDataService
         bg_pic = doc.at_css('.profile-background-image__image-container img')['src'] rescue ""  
 
         connect_url = browser.goto("#{profile_url}overlay/contact-info/")
-        sleep(2)
+        sleep(5)
         doc2 = Nokogiri::HTML(browser.html)
         div_elements = doc2.css('div.pv-profile-section__section-info.section-info')
         href_values = div_elements.css('a').map { |link| link['href'] }
