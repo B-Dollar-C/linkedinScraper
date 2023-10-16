@@ -14,6 +14,13 @@ class BasicDataService
         sleep(5)
         #browser_result = browser.section(class: 'artdeco-card ember-view pv-top-card').wait_until(&:present?)
         doc = Nokogiri::HTML(browser.html)
+        puts "----------------------------"
+        puts browser.inspect
+        puts "----------------------------"
+        puts profile_url
+        puts "-------------------------------"
+        puts doc
+        puts "-------------------------------"
         profile_name = doc.at_css('.pv-text-details__title h1').text.strip
         linkedin_tags = doc.at_css('.text-body-medium.break-words').text.strip rescue ""
         connections = doc.at_css('.link-without-visited-state .t-bold, .t-black--light .t-bold').text.strip
