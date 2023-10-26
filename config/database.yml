@@ -15,8 +15,8 @@ production:
   database: linkedinscraper_prod_2
   username: root
   password: root
-  host: 0.0.0.0
-  port: 10000
+  host: localhost
+  port: 3000
   encoding: utf8mb4
   collation: utf8mb4_unicode_ci
   socket: /var/run/mysqld/mysqld.sock
