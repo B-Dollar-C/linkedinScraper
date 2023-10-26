@@ -3,31 +3,27 @@ class BasicDataService
 	def self.overview(profile_url)
       user_data = {}
       begin
-
-       browser = Watir::Browser.new :chrome, headless: true#, options: { binary: '/usr/bin/google-chrome' }, driver_path: '/usr/bin/chromedriver'
+        browser = Watir::Browser.new :chrome, headless: true#, options: { binary: '/usr/bin/google-chrome' }, driver_path: '/usr/bin/chromedriver'
         browser.goto("https://linkedin.com")
         sleep(5)
-        puts "---------------"
-        puts browser.inspect
-        puts "---------------"
         browser.text_field(id: 'session_password').set("Ravimani@123")
         browser.text_field(id: 'session_key').set("manitripathiravi007@gmail.com")
-        browser.button(data_id: 'sign-in-form__submit-btn').click
-        puts "-------------------------"
-        puts browser.inspect
-        puts "-------------------------"
-        sleep(2)
+        retries = 3
+        begin
+           browser.button(data_id: 'sign-in-form__submit-btn').click
+        rescue Net::ReadTimeout => e
+           if retries > 0
+              retries -= 1
+              sleep(5)
+              retry
+            else
+              puts "Maximum retries reached. Error: #{e}"
+            end
+         end
         browser.goto(profile_url)
         sleep(5)
-        #browser_result = browser.section(class: 'artdeco-card ember-view pv-top-card').wait_until(&:present?)
-        doc = Nokogiri::HTML(browser.html)
-        puts "----------------------------"
-        puts browser.inspect
-        puts "----------------------------"
-        puts profile_url
-        puts "-------------------------------"
-        puts doc
-        puts "-------------------------------"
+        browser_result = browser.section(class: 'artdeco-card ember-view pv-top-card').wait_until(&:present?)
+        doc = Nokogiri::HTML(browser_result.inner_html)
         profile_name = doc.at_css('.pv-text-details__title h1').text.strip
         linkedin_tags = doc.at_css('.text-body-medium.break-words').text.strip rescue ""
         connections = doc.at_css('.link-without-visited-state .t-bold, .t-black--light .t-bold').text.strip
@@ -57,8 +53,9 @@ class BasicDataService
         	metadata: metadata
         }
      rescue Exception => e
-      puts e
-      return user_data
+        puts e
      end
-    end
+     browser.quit
+     return user_data
+   end
 end
