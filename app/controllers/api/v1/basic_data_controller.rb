@@ -49,4 +49,20 @@ class Api::V1::BasicDataController < ApplicationController
               end
            end   
 	end
+
+	def register
+		profile = BaseProfile.where(profile_url: params[:profile_url], roll: params[:roll]).first 
+        if profile.present?
+        	render json: {code: 400, status: false, message: "Profile already present!"}, status: 400
+        else
+    		user = UserObjectPayloadService.register_payload(params)
+    		user[:profile_url] = params[:profile_url]
+    		@user_data = BaseProfile.new(user)
+            if @user_data.save
+                render json: {code: 200, status: true, message: "Registration Successful! Setting up your BlendIn Account. You will be notified soon!"}
+            else
+                render json: {code: 400, status: false, message: @user_data.errors.full_messages.join(',')}, status: 400
+            end  
+        end
+	end
 end
