@@ -1,37 +1,38 @@
 class Api::V1::BasicDataController < ApplicationController
 	protect_from_forgery with: :null_session
+	require 'json'
+    require 'uri'
+    require 'net/http'
+    require 'benchmark'
 	def profile
-		profile = BaseProfile.where(profile_url: params[:profile_url]).first 
-        if profile.present?
-        	render json: {code: 400, status: false, message: "Profile already present!"}, status: 400
-        else
-    		user_data = BasicDataService.overview(params[:profile_url])
-    		if user_data.present?
-    			user_data[:auth_token] = params[:auth_token].presence || SecureRandom.hex
-                if params[:password].blank?
-                  password = Devise.friendly_token.first(8)
-                  user_data[:password] = password
-                  user_data[:password_confirmation] = password
-                else
-                  user_data[:password] = params[:password]
-                  user_data[:password_confirmation] = params[:password_confirmation]
-                end            
+       	user_data = BasicDataService.overview(params[:profile_url])
+   		if user_data.present?
+   			user_data[:auth_token] =  params[:auth_token]
+   			uri = URI.parse("https://linkedinscraper.onrender.com/api/v1/basic_data/register_v2")
+               header = {'Content-Type': 'application/json'}  # Use 'application/json' for the Content-Type
+               http = Net::HTTP.new(uri.host, uri.port)
+               http.use_ssl = false  # Change to 'false' if you're not using SSL
+               # http.verify_mode = OpenSSL::SSL::VERIFY_NONE  # Comment out or remove this line if you're not using SSL            
 
-                user_data[:roll] = params[:roll] if params[:roll].present?
-                user_data[:course] = params[:course] if params[:course].present? 
-                user_data[:batch] = params[:batch] if params[:batch].present?
-                user_data[:phone] = params[:phone] if params[:phone].present?
-                user_data[:is_deleted] = false
-                @user = BaseProfile.new(user_data)
-                if @user.save
-                    render json: {code: 200, status: true, message: "Sign Up Successful", data: @user.except(:password)}
-                else
-                    render json: {code: 400, status: false, message: @user.errors.full_messages.join(',')}, status: 400
-                end   
-    		else
-    			render json: {code: 500, status: false, data: user_data, message: "Something went Wrong! Please enter a valid Linkedin URL"}, status: 500
-    		end
-    	end
+              # Corrected request creation
+               request = Net::HTTP::Post.new(uri.path, header)
+               request.body = user_data.to_json            
+
+              Rails.logger.debug "Request Body: #{request.body}"  # Use 'debug' level for logging            
+           
+
+              begin
+                   time = Benchmark.ms do
+                     @response = http.request(request)
+                   end
+                   Rails.logger.error "BlendIn api time #{time} ms"
+               rescue Net::ReadTimeout => e
+                   Rails.logger.error "HTTP request timed out: #{e.message}"
+               end            
+               render json: {status: true, data: JSON.parse(@response.body)} 
+   		else
+   			render json: {code: 500, status: false, data: user_data, message: "Something went Wrong! Please enter a valid Linkedin URL"}, status: 500
+   		end
 	end
 
 
@@ -63,6 +64,20 @@ class Api::V1::BasicDataController < ApplicationController
             else
                 render json: {code: 400, status: false, message: @user_data.errors.full_messages.join(',')}, status: 400
             end  
+        end
+	end
+
+	def register_v2
+		user_data = params[:user_data]
+		profile = BaseProfile.where(profile_url: user_data[:profile_url], auth_token: user_data[:auth_token]).first 
+        if profile.present?
+            if profile.update(user_data)
+                render json: {code: 200, status: true, message: "Sign Up Successful", data: profile}
+            else
+                render json: {code: 400, status: false, message: profile.errors.full_messages.join(',')}, status: 400
+            end 
+        else
+        	render json: {code: 400, status: false, message: "Profile Not Found!"}, status: 400
         end
 	end
 end
