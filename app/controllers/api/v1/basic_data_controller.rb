@@ -29,7 +29,7 @@ class Api::V1::BasicDataController < ApplicationController
                rescue Net::ReadTimeout => e
                    Rails.logger.error "HTTP request timed out: #{e.message}"
                end            
-               render json: {status: true, data: JSON.parse(@response.body)} 
+               render json: {status: true, data: @response.body} 
    		else
    			render json: {code: 500, status: false, data: user_data, message: "Something went Wrong! Please enter a valid Linkedin URL"}, status: 500
    		end
@@ -68,10 +68,9 @@ class Api::V1::BasicDataController < ApplicationController
 	end
 
 	def register_v2
-		user_data = params[:user_data]
-		profile = BaseProfile.where(profile_url: user_data[:profile_url], auth_token: user_data[:auth_token]).first 
+		profile = BaseProfile.where(profile_url: params[:profile_url], auth_token: params[:auth_token]).first 
         if profile.present?
-            if profile.update(user_data)
+            if profile.update(params)
                 render json: {code: 200, status: true, message: "Sign Up Successful", data: profile}
             else
                 render json: {code: 400, status: false, message: profile.errors.full_messages.join(',')}, status: 400
