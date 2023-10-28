@@ -15,7 +15,7 @@ production:
   database: sql12657348
   username: sql12657348
   password: B6QulrsK2p
-  host: http://sql12.freemysqlhosting.net/
+  host: sql12.freemysqlhosting.net
   port: 3306
   encoding: utf8mb4
   collation: utf8mb4_unicode_ci
