@@ -68,9 +68,24 @@ class Api::V1::BasicDataController < ApplicationController
 	end
 
 	def register_v2
-		profile = BaseProfile.where(profile_url: params[:profile_url], auth_token: params[:auth_token]).first 
+		profile = BaseProfile.where(profile_url: params["profile_url"], auth_token: params["auth_token"]).first 
         if profile.present?
-            if profile.update(params)
+        	profile.profile_name = params[:profile_name] if params[:profile_name].present? && !params[:profile_name].blank?
+        	puts "done-1"
+        	profile.linkedin_tags = params[:linkedin_tags] if params[:linkedin_tags].present? && !params[:linkedin_tags].blank?
+        	puts "done-2"
+        	profile.connections = params[:connections] if params[:connections].present? && !params[:connections].blank?
+        	puts "done-3"
+        	profile.profile_pic = params[:profile_pic] if params[:profile_pic].present? && !params[:profile_pic].blank?
+        	puts "done-4"
+        	profile.bg_pic = params[:bg_pic] if params[:bg_pic].present? && !params[:bg_pic].blank?
+        	puts "done-5"
+        	profile.phone = params[:phone] if params[:phone].present? && !params[:phone].blank?
+        	puts "done-6"
+        	puts "before_metadata"
+        	profile.metadata = params[:metadata] if params[:metadata].present? && !params[:metadata].blank?
+        	puts "after_metadata"
+            if profile.save
                 render json: {code: 200, status: true, message: "Sign Up Successful", data: profile}
             else
                 render json: {code: 400, status: false, message: profile.errors.full_messages.join(',')}, status: 400
