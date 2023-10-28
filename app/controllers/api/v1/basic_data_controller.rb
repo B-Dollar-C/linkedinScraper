@@ -83,7 +83,7 @@ class Api::V1::BasicDataController < ApplicationController
         	profile.phone = params[:phone] if params[:phone].present? && !params[:phone].blank?
         	puts "done-6"
         	puts "before_metadata"
-        	profile.metadata = params[:metadata] if params[:metadata].present? && !params[:metadata].blank?
+        	profile.metadata = params[:metadata].to_h if params[:metadata].present? && !params[:metadata].blank?
         	puts "after_metadata"
             if profile.save
                 render json: {code: 200, status: true, message: "Sign Up Successful", data: profile}
