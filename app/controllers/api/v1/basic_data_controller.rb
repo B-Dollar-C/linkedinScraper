@@ -94,7 +94,7 @@ class Api::V1::BasicDataController < ApplicationController
             	profile.metadata = metahash
             end
         	puts "after_metadata"
-            if profile.update
+            if profile.save
                 render json: {code: 200, status: true, message: "Sign Up Successful", data: profile}
             else
                 render json: {code: 400, status: false, message: profile.errors.full_messages.join(',')}, status: 400
