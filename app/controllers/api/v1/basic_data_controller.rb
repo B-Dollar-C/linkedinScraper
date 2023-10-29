@@ -82,6 +82,8 @@ class Api::V1::BasicDataController < ApplicationController
         	puts "done-5"
         	profile.phone = params[:phone] if params[:phone].present? && !params[:phone].blank?
         	puts "done-6"
+        	profile.connect_url = params[:connect_url] if params[:connect_url].present? && !params[:connect_url].blank?
+        	puts "done-7"
         	puts "before_metadata"
         	if params[:metadata].present?
             	metadata_params = params[:metadata].permit!
@@ -92,7 +94,7 @@ class Api::V1::BasicDataController < ApplicationController
             	profile.metadata = metahash
             end
         	puts "after_metadata"
-            if profile.save
+            if profile.update
                 render json: {code: 200, status: true, message: "Sign Up Successful", data: profile}
             else
                 render json: {code: 400, status: false, message: profile.errors.full_messages.join(',')}, status: 400
