@@ -11,7 +11,8 @@ class Api::V1::BasicDataController < ApplicationController
    			uri = URI.parse("https://linkedinscraper.onrender.com/api/v1/basic_data/register_v2")
                header = {'Content-Type': 'application/json'}  # Use 'application/json' for the Content-Type
                http = Net::HTTP.new(uri.host, uri.port)
-               http.use_ssl = false  # Change to 'false' if you're not using SSL
+               http.use_ssl = true # Change to 'false' if you're not using SSL
+               http.verify_mode = OpenSSL::SSL::VERIFY_NONE
                # http.verify_mode = OpenSSL::SSL::VERIFY_NONE  # Comment out or remove this line if you're not using SSL            
 
               # Corrected request creation
@@ -29,7 +30,7 @@ class Api::V1::BasicDataController < ApplicationController
                rescue Net::ReadTimeout => e
                    Rails.logger.error "HTTP request timed out: #{e.message}"
                end            
-               render json: {status: true, data: @response.body} 
+               render json: {status: true, data: JSON.parse(@response.body)} 
    		else
    			render json: {code: 500, status: false, data: user_data, message: "Something went Wrong! Please enter a valid Linkedin URL"}, status: 500
    		end

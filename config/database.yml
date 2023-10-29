@@ -1,10 +1,10 @@
 development:
   adapter: mysql2
-  database: linkedinscraper
-  username: root
-  password: root
-  host: localhost
-  port: 3000
+  database: <%= ENV['DATABASE_NAME'] %>
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  host: <%= ENV['DATABASE_HOST'] %>
+  port: <%= ENV['DATABASE_PORT'] %>
   pool: 40
   timeout: 5000
   encoding: utf8mb4
@@ -12,10 +12,10 @@ development:
 
 production:
   adapter: mysql2
-  database: sql12657348
-  username: sql12657348
-  password: B6QulrsK2p
-  host: sql12.freemysqlhosting.net
-  port: 3306
+  database: <%= ENV['DATABASE_NAME'] %>
+  username: <%= ENV['DATABASE_USERNAME'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
+  host: <%= ENV['DATABASE_HOST'] %>
+  port: <%= ENV['DATABASE_PORT'] %>
   encoding: utf8mb4
   collation: utf8mb4_unicode_ci
